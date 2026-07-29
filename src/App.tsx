@@ -25,9 +25,6 @@ import { NinetyDaySimulationStudio } from './components/NinetyDaySimulationStudi
 
 import {
   INITIAL_POOLS,
-  INITIAL_ROUTES,
-  INITIAL_AUDIT_LOGS,
-  INITIAL_BENCHMARK,
   VQC_METADATA,
   POLYGON_TOKEN_SYMBOLS,
   POLYGON_DEX_IDENTIFIERS,
@@ -44,18 +41,31 @@ import {
   DEFAULT_WALLET_STATE,
 } from './utils/persistentState';
 import { POL_PRICE_USD } from './config/chainConfig';
+import {
+  fetchRoutesFromFirestore,
+  subscribeAuditLogsFromFirestore,
+  syncRouteToFirestore,
+  syncAuditLogToFirestore,
+} from './lib/firebase';
+import { runLiveBenchmark, StepUpdateCallback, PENDING_BENCHMARK_REPORT } from './utils/liveBenchmark';
+
+const MIN_TICKER_GROSS_USD = 50;
+const MAX_TICKER_GROSS_MULTIPLIER = 2;
+const MIN_TICKER_GAS_USD = 0.3;
+const MAX_TICKER_GAS_USD = 0.75;
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('top50_execution');
   
-  // Initialize state memory from local storage on boot up
-  const initialMemory = loadSystemMemory(INITIAL_ROUTES, INITIAL_AUDIT_LOGS);
+  // Boot from localStorage for operator settings only (no seeded data)
+  const initialMemory = loadSystemMemory();
 
   const [walletState, setWalletState] = useState<WalletState>(initialMemory.wallet);
-  const [routes, setRoutes] = useState<ArbitrageRoute[]>(initialMemory.routes);
+  // Routes and audit logs are sourced exclusively from Firestore / live pipeline
+  const [routes, setRoutes] = useState<ArbitrageRoute[]>([]);
   const [pools, setPools] = useState(INITIAL_POOLS);
-  const [auditLogs, setAuditLogs] = useState<SimulationAuditLog[]>(initialMemory.auditLogs);
-  const [benchmarkReport, setBenchmarkReport] = useState(INITIAL_BENCHMARK);
+  const [auditLogs, setAuditLogs] = useState<SimulationAuditLog[]>([]);
+  const [benchmarkReport, setBenchmarkReport] = useState(PENDING_BENCHMARK_REPORT);
   const [gasGwei, setGasGwei] = useState<number>(initialMemory.gasGwei || 38);
   const [isHandsFreeActive, setIsHandsFreeActive] = useState<boolean>(initialMemory.handsFreeActive);
   const [lastSyncedAt, setLastSyncedAt] = useState<string>(initialMemory.lastSyncedAt);
@@ -67,21 +77,40 @@ export default function App() {
   const [selectedRouteForInjector, setSelectedRouteForInjector] = useState<ArbitrageRoute | null>(null);
   const [selectedRouteForAI, setSelectedRouteForAI] = useState<ArbitrageRoute | null>(null);
 
-  // Auto-Save memory whenever wallet, routes, logs, or hands-free toggle change
+  // Auto-Save operator settings whenever wallet, gas, or hands-free toggle change
   const persistCurrentState = useCallback(() => {
     const timestamp = saveSystemMemory({
       wallet: walletState,
       handsFreeActive: isHandsFreeActive,
       gasGwei,
-      routes,
-      auditLogs,
     });
     setLastSyncedAt(timestamp);
-  }, [walletState, isHandsFreeActive, gasGwei, routes, auditLogs]);
+  }, [walletState, isHandsFreeActive, gasGwei]);
 
   useEffect(() => {
     persistCurrentState();
   }, [persistCurrentState]);
+
+  // Load routes from Firestore on mount
+  useEffect(() => {
+    fetchRoutesFromFirestore()
+      .then((firestoreRoutes) => {
+        if (firestoreRoutes.length > 0) {
+          setRoutes(firestoreRoutes);
+        }
+      })
+      .catch((err) => {
+        console.warn('Failed to load routes from Firestore:', err);
+      });
+  }, []);
+
+  // Subscribe to live audit logs from Firestore
+  useEffect(() => {
+    const unsubscribe = subscribeAuditLogsFromFirestore((logs) => {
+      setAuditLogs(logs);
+    });
+    return unsubscribe;
+  }, []);
 
   // Live Real-time Market Data Stream Ticker for Active Opportunities
   useEffect(() => {
@@ -93,13 +122,15 @@ export default function App() {
 
           // Fluctuate gross profit slightly between -0.8% and +1.2%
           const pctChange = (Math.random() * 0.02) - 0.008;
-          const newGross = Math.max(50, Number((r.grossProfitUSD * (1 + pctChange)).toFixed(2)));
-          const gasAdjustment = Number((0.45 + Math.random() * 0.25).toFixed(2));
-          const newNet = Math.max(10, Number((newGross - gasAdjustment).toFixed(2)));
+          const grossCandidate = Number((r.grossProfitUSD * (1 + pctChange)).toFixed(2));
+          // Keep a hard safety floor while limiting per-tick upside to prevent sudden chart blowouts.
+          const newGross = Math.max(MIN_TICKER_GROSS_USD, Math.min(r.grossProfitUSD * MAX_TICKER_GROSS_MULTIPLIER, grossCandidate));
+          const gasAdjustment = Math.max(MIN_TICKER_GAS_USD, Math.min(MAX_TICKER_GAS_USD, Number((0.45 + Math.random() * 0.25).toFixed(2))));
+          const newNet = Math.max(0, Number((newGross - gasAdjustment).toFixed(2)));
 
           // Fluctuate VQC score slightly
           const vqcDelta = (Math.random() * 0.01) - 0.004;
-          const newVqc = Math.min(0.995, Math.max(0.75, Number((r.vqcAlphaScore + vqcDelta).toFixed(3))));
+          const newVqc = Math.min(0.99, Math.max(0.7, Number((r.vqcAlphaScore + vqcDelta).toFixed(3))));
 
           // Append to history for real-time sparkline updating
           const currentHistory = r.vqcAlphaHistory || [0.88, 0.91, 0.93, 0.89, newVqc];
@@ -172,12 +203,10 @@ export default function App() {
     persistCurrentState();
   };
 
-  // Handler: Reset Memory Snapshot
+  // Handler: Reset Memory Snapshot (clears operator settings; routes remain in Firestore)
   const handleResetMemorySnapshot = () => {
     clearSystemMemory();
     setWalletState(DEFAULT_WALLET_STATE);
-    setRoutes(INITIAL_ROUTES);
-    setAuditLogs(INITIAL_AUDIT_LOGS);
     setGasGwei(38);
     setIsHandsFreeActive(true);
     setLastSyncedAt(new Date().toISOString());
@@ -195,18 +224,20 @@ export default function App() {
       return;
     }
 
+    const executedRoute = {
+      ...targetRoute,
+      stage: 'ACCOUNTED' as const,
+      txHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
+      notes: 'Mined on Polygon Mainnet. Balancer V3 transient storage flashloan repaid successfully. Verified registry pool assets.',
+    };
+
     setRoutes((prev) =>
-      prev.map((r) => {
-        if (r.id === routeId) {
-          return {
-            ...r,
-            stage: 'ACCOUNTED',
-            txHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
-            notes: 'Mined in block #62849201. Balancer V3 transient storage flashloan repaid successfully. Verified registry pool assets.',
-          };
-        }
-        return r;
-      })
+      prev.map((r) => (r.id === routeId ? executedRoute : r))
+    );
+
+    // Sync executed route state back to Firestore
+    syncRouteToFirestore(executedRoute).catch((err) =>
+      console.warn('Failed to sync executed route to Firestore:', err)
     );
 
     // Update Wallet Balances & Nonce count
@@ -220,7 +251,7 @@ export default function App() {
       totalNetProfitUSD: prev.totalNetProfitUSD + targetRoute.netProfitUSD,
     }));
 
-    // Append to Redis Stream Audit Log
+    // Append audit log and sync to Firestore
     const newLog: SimulationAuditLog = {
       id: `log_${Date.now()}`,
       simulationId: `sim_${Math.random().toString(36).substring(2, 8)}`,
@@ -236,6 +267,9 @@ export default function App() {
       timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC',
     };
     setAuditLogs((prev) => [newLog, ...prev]);
+    syncAuditLogToFirestore(newLog).catch((err) =>
+      console.warn('Failed to sync audit log to Firestore:', err)
+    );
   };
 
   // Handler: Flush Redis Stream to Cloud SQL Batch
@@ -311,19 +345,28 @@ export default function App() {
     }, 600);
   };
 
-  // Handler: Run Benchmark Suite
+  // Handler: Run Live Benchmark — all data sourced from live pipeline + RPC
   const handleRunBenchmark = () => {
-    setIsRunningBenchmark(true);
-    setTimeout(() => {
+    (async () => {
+      setIsRunningBenchmark(true);
+
+      // Reset every step to PENDING before starting
       setBenchmarkReport((prev) => ({
         ...prev,
-        overallScore: 98.2,
-        pipelineLatencyMs: 1.38,
-        testedRoutes: prev.testedRoutes + 50,
-        validRoutes: prev.validRoutes + 48,
+        steps: prev.steps.map((s) => ({ ...s, status: 'PENDING' as const, output: 'Waiting for benchmark run.' })),
       }));
+
+      const onStepUpdate: StepUpdateCallback = (stepId, update) => {
+        setBenchmarkReport((prev) => ({
+          ...prev,
+          steps: prev.steps.map((s) => (s.id === stepId ? { ...s, ...update } : s)),
+        }));
+      };
+
+      const result = await runLiveBenchmark(onStepUpdate, routes, pools, VQC_METADATA);
+      setBenchmarkReport(result);
       setIsRunningBenchmark(false);
-    }, 1200);
+    })();
   };
 
   // Handler: Advance Route Pipeline Stage
