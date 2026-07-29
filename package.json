@@ -43,5 +43,12 @@
     "typescript": "~5.8.2",
     "vite": "^6.2.3",
     "vitest": "^3.2.6"
+  },
+  "allowScripts": {
+    "@firebase/util@1.15.1": true,
+    "@google/genai@2.13.0": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.1": true,
+    "protobufjs@7.6.5": true
   }
 }

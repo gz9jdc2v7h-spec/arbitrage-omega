@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PoolInfo } from '../types';
 import { CHAINLINK_FEEDS, FULL_CHAIN_137_METRICS } from '../data/mockEngineData';
 import { MidTokenPoolRegistryStudio } from './MidTokenPoolRegistryStudio';
+import { C1C2LiquidationSynchronizer } from './C1C2LiquidationSynchronizer';
 import {
   Server,
   ShieldCheck,
@@ -16,6 +17,7 @@ import {
   Search,
   CheckCircle2,
   Coins,
+  Cpu,
 } from 'lucide-react';
 
 interface ProtocolRegistryMatrixProps {
@@ -33,7 +35,7 @@ interface RpcSourceConfig {
 }
 
 export const ProtocolRegistryMatrix: React.FC<ProtocolRegistryMatrixProps> = ({ pools }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'MID_TOKEN_STUDIO' | 'TOPOLOGY_MATRIX' | 'ORACLES'>('MID_TOKEN_STUDIO');
+  const [activeSubTab, setActiveSubTab] = useState<'MID_TOKEN_STUDIO' | 'TOPOLOGY_MATRIX' | 'ORACLES' | 'POOL_ROLES_SYNC'>('MID_TOKEN_STUDIO');
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProtocolFilter, setSelectedProtocolFilter] = useState('ALL');
@@ -180,6 +182,21 @@ export const ProtocolRegistryMatrix: React.FC<ProtocolRegistryMatrixProps> = ({ 
         >
           <Activity className="w-4 h-4 text-amber-400" />
           <span>Chainlink Price Feeds</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('POOL_ROLES_SYNC')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold transition-all ${
+            activeSubTab === 'POOL_ROLES_SYNC'
+              ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/50 shadow-lg shadow-indigo-950/40'
+              : 'text-slate-400 hover:text-white hover:bg-slate-800'
+          }`}
+        >
+          <Cpu className="w-4 h-4 text-indigo-400" />
+          <span>C1 / C2 / Liquidation Synchronizer</span>
+          <span className="bg-indigo-950 text-indigo-300 border border-indigo-800 text-[9px] px-1.5 py-0.5 rounded font-mono">
+            New
+          </span>
         </button>
       </div>
 
@@ -589,6 +606,10 @@ export const ProtocolRegistryMatrix: React.FC<ProtocolRegistryMatrixProps> = ({ 
             </table>
           </div>
         </div>
+      )}
+
+      {activeSubTab === 'POOL_ROLES_SYNC' && (
+        <C1C2LiquidationSynchronizer pools={pools} />
       )}
     </div>
   );

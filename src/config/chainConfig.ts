@@ -59,5 +59,5 @@ export const POLYGON_CHAIN_CONFIG = {
   titanMevUsWest: 'https://us.rpc.titanbuilder.xyz',
 };
 
-/** Current POL/USD spot price used for USD-denominated balance display. */
-export const POL_PRICE_USD = 0.073;
+/** Current POL/USD spot price used for USD-denominated balance display (Chainlink POL/USD feed). */
+export const POL_PRICE_USD = 0.5820;

@@ -69,7 +69,7 @@ export const INITIAL_BASE_ASSETS: BaseAsset[] = [
     balancerV3AvailableUSD: 8200000,
     flashFeeBps: 5, // 0.05%
     maxFlashLoanUSD: 5000000,
-    priceUSD: 0.58,
+    priceUSD: 0.5820,
   },
   {
     symbol: 'USDC.e',
@@ -102,7 +102,7 @@ export const INITIAL_BASE_ASSETS: BaseAsset[] = [
     balancerV3AvailableUSD: 21500000,
     flashFeeBps: 5,
     maxFlashLoanUSD: 12000000,
-    priceUSD: 3240.0,
+    priceUSD: 3485.20,
   },
   {
     symbol: 'WBTC',
@@ -113,7 +113,7 @@ export const INITIAL_BASE_ASSETS: BaseAsset[] = [
     balancerV3AvailableUSD: 14300000,
     flashFeeBps: 5,
     maxFlashLoanUSD: 7500000,
-    priceUSD: 64500.0,
+    priceUSD: 68420.00,
   },
 ];
 
@@ -124,7 +124,7 @@ export const INITIAL_MID_TOKENS: MidTokenAsset[] = [
     address: '0x53E0bca35eC356BD5ddCebbD1A428D2BE0704568',
     decimals: 18,
     category: 'MID_TOKEN_SWAPPABLE',
-    referencePriceUSD: 18.5,
+    referencePriceUSD: 15.10,
   },
   {
     symbol: 'AAVE',
@@ -132,7 +132,7 @@ export const INITIAL_MID_TOKENS: MidTokenAsset[] = [
     address: '0xD6DF9B790c7e0731972320F71c0c1741D22d287C',
     decimals: 18,
     category: 'MID_TOKEN_SWAPPABLE',
-    referencePriceUSD: 104.2,
+    referencePriceUSD: 102.50,
   },
   {
     symbol: 'QUICK',
@@ -148,7 +148,7 @@ export const INITIAL_MID_TOKENS: MidTokenAsset[] = [
     address: '0x172370d5Cd63279eFa6d502DAb29171933a610AF',
     decimals: 18,
     category: 'MID_TOKEN_SWAPPABLE',
-    referencePriceUSD: 0.32,
+    referencePriceUSD: 0.3340,
   },
   {
     symbol: 'BAL',
@@ -156,7 +156,7 @@ export const INITIAL_MID_TOKENS: MidTokenAsset[] = [
     address: '0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3',
     decimals: 18,
     category: 'MID_TOKEN_SWAPPABLE',
-    referencePriceUSD: 2.85,
+    referencePriceUSD: 2.52,
   },
   {
     symbol: 'GRT',
@@ -188,7 +188,7 @@ export const INITIAL_MID_TOKENS: MidTokenAsset[] = [
     address: '0xb33EaAd8d922B1083446DC23f610c2567fB5180f',
     decimals: 18,
     category: 'MID_TOKEN_SWAPPABLE',
-    referencePriceUSD: 7.85,
+    referencePriceUSD: 8.25,
   },
   {
     symbol: 'stMATIC',
@@ -210,9 +210,9 @@ export const INITIAL_MID_POOLS: MidTokenPool[] = [
     protocol: 'UniswapV3',
     protocolArchitecture: 'V3_CLMM',
     address: '0x8a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b',
-    executablePriceUSD: 18.68, // Highest executable price
+    executablePriceUSD: 15.25, // Highest executable price
     reserveMidToken: 125000,
-    reserveBaseToken: 2335000,
+    reserveBaseToken: 1906250,
     feeBps: 30,
     isActive: true,
     lastUpdatedMs: Date.now(),
@@ -225,9 +225,9 @@ export const INITIAL_MID_POOLS: MidTokenPool[] = [
     protocol: 'QuickSwapV3',
     protocolArchitecture: 'QS_V3_ALGEBRA',
     address: '0x1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f0e',
-    executablePriceUSD: 18.41, // Lowest executable price
+    executablePriceUSD: 15.02, // Lowest executable price
     reserveMidToken: 180000,
-    reserveBaseToken: 3313800,
+    reserveBaseToken: 2703600,
     feeBps: 25,
     isActive: true,
     lastUpdatedMs: Date.now(),
@@ -240,9 +240,9 @@ export const INITIAL_MID_POOLS: MidTokenPool[] = [
     protocol: 'BalancerV2',
     protocolArchitecture: 'BAL_WEIGHTED',
     address: '0x2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b',
-    executablePriceUSD: 18.52,
+    executablePriceUSD: 15.11,
     reserveMidToken: 95000,
-    reserveBaseToken: 1759400,
+    reserveBaseToken: 1435450,
     feeBps: 18,
     isActive: true,
     lastUpdatedMs: Date.now(),
@@ -255,9 +255,9 @@ export const INITIAL_MID_POOLS: MidTokenPool[] = [
     protocol: 'KyberSwap',
     protocolArchitecture: 'V3_CLMM',
     address: '0x3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d',
-    executablePriceUSD: 18.48,
+    executablePriceUSD: 15.08,
     reserveMidToken: 72000,
-    reserveBaseToken: 1330560,
+    reserveBaseToken: 1085760,
     feeBps: 20,
     isActive: true,
     lastUpdatedMs: Date.now(),
@@ -272,9 +272,9 @@ export const INITIAL_MID_POOLS: MidTokenPool[] = [
     protocol: 'UniswapV3',
     protocolArchitecture: 'V3_CLMM',
     address: '0x4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e',
-    executablePriceUSD: 105.8, // Highest
+    executablePriceUSD: 104.1, // Highest
     reserveMidToken: 35000,
-    reserveBaseToken: 3703000,
+    reserveBaseToken: 3643500,
     feeBps: 30,
     isActive: true,
     lastUpdatedMs: Date.now(),
@@ -287,9 +287,9 @@ export const INITIAL_MID_POOLS: MidTokenPool[] = [
     protocol: 'QuickSwapV3',
     protocolArchitecture: 'QS_V3_ALGEBRA',
     address: '0x5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f',
-    executablePriceUSD: 103.9, // Lowest
+    executablePriceUSD: 102.2, // Lowest
     reserveMidToken: 42000,
-    reserveBaseToken: 4363800,
+    reserveBaseToken: 4292400,
     feeBps: 25,
     isActive: true,
     lastUpdatedMs: Date.now(),
@@ -336,9 +336,9 @@ export const INITIAL_MID_POOLS: MidTokenPool[] = [
     protocol: 'Curve',
     protocolArchitecture: 'CURVE_STABLE',
     address: '0x8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c',
-    executablePriceUSD: 0.328, // Highest
+    executablePriceUSD: 0.342, // Highest
     reserveMidToken: 12000000,
-    reserveBaseToken: 3936000,
+    reserveBaseToken: 4104000,
     feeBps: 4,
     isActive: true,
     lastUpdatedMs: Date.now(),
@@ -351,9 +351,9 @@ export const INITIAL_MID_POOLS: MidTokenPool[] = [
     protocol: 'UniswapV3',
     protocolArchitecture: 'V3_CLMM',
     address: '0x9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d',
-    executablePriceUSD: 0.315, // Lowest
+    executablePriceUSD: 0.329, // Lowest
     reserveMidToken: 9500000,
-    reserveBaseToken: 2992500,
+    reserveBaseToken: 3125500,
     feeBps: 30,
     isActive: true,
     lastUpdatedMs: Date.now(),
