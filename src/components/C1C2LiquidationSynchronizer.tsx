@@ -9,7 +9,6 @@ import {
   Check,
   Copy,
   Lock,
-  Layers,
   Filter,
   Play,
   CheckCircle2,
@@ -31,7 +30,7 @@ interface C1C2LiquidationSynchronizerProps {
 type CategoryFilter = 'ALL' | 'FLASHLOAN_CAPITAL' | 'ASSET_SWAP' | 'LIQUIDATION_BORROWER';
 type FlowTab = 'C1_ENGINE' | 'C2_DECISION' | 'LIQUIDATION_ENGINE';
 
-const POOL_CATEGORY_MAP: Record<string, CategoryFilter> = {
+const POOL_CATEGORY_MAP: Record<PoolInfo['category'], CategoryFilter> = {
   FUNDING_FLASHLOAN: 'FLASHLOAN_CAPITAL',
   SWAPPABLE_EXECUTION: 'ASSET_SWAP',
   LIQUIDATION_TARGET: 'LIQUIDATION_BORROWER',

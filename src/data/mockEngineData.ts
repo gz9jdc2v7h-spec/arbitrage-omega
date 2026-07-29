@@ -306,13 +306,13 @@ export const INITIAL_POOLS: PoolInfo[] = [
     protocol: 'AAVE_V3',
     protocolArchitecture: 'Aave V3 Lending Market — Liquidation Target',
     category: 'LIQUIDATION_TARGET',
-    address: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+    address: '0x794a61358D6845594F94dc1DB02A252b5b4814aD',
     token0: POLYGON_TOKENS.WETH,
     token1: POLYGON_TOKENS.USDC_NATIVE,
     feeBps: 9,
     reserve0USD: 38500000,
     reserve1USD: 34200000,
-    isFundingPool: false,
+    isFundingPool: true,
     status: 'ACTIVE',
   },
   {
@@ -321,13 +321,13 @@ export const INITIAL_POOLS: PoolInfo[] = [
     protocol: 'AAVE_V3',
     protocolArchitecture: 'Aave V3 Lending Market — Liquidation Target',
     category: 'LIQUIDATION_TARGET',
-    address: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
+    address: '0x794a61358D6845594F94dc1DB02A252b5b4814aD',
     token0: POLYGON_TOKENS.WBTC,
     token1: POLYGON_TOKENS.USDT,
     feeBps: 9,
     reserve0USD: 21000000,
     reserve1USD: 18700000,
-    isFundingPool: false,
+    isFundingPool: true,
     status: 'ACTIVE',
   },
   {
@@ -342,7 +342,7 @@ export const INITIAL_POOLS: PoolInfo[] = [
     feeBps: 5,
     reserve0USD: 14800000,
     reserve1USD: 12600000,
-    isFundingPool: false,
+    isFundingPool: true,
     status: 'ACTIVE',
   },
   {
@@ -357,7 +357,7 @@ export const INITIAL_POOLS: PoolInfo[] = [
     feeBps: 5,
     reserve0USD: 19200000,
     reserve1USD: 16400000,
-    isFundingPool: false,
+    isFundingPool: true,
     status: 'ACTIVE',
   },
 ];
@@ -386,4 +386,3 @@ export const VQC_METADATA: VqcModelMetadata = {
     crossChainSlippageVariance: -0.10,
   },
 };
-

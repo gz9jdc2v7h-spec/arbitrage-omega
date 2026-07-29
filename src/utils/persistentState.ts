@@ -28,6 +28,9 @@ export interface SystemAccountMemoryState {
 }
 
 const STORAGE_KEY = 'OMEGA_V5_SYSTEM_ACCOUNT_MEMORY_V1';
+const DEFAULT_FALLBACK_NATIVE_POL_BALANCE = 26.77;
+const DEFAULT_FALLBACK_NONCE_COUNT = 179;
+const DEFAULT_FALLBACK_POL_VALUE_USD = Number((DEFAULT_FALLBACK_NATIVE_POL_BALANCE * POL_PRICE_USD).toFixed(2));
 
 export const DEFAULT_WALLET_STATE: WalletState = {
   address: POLYGON_CHAIN_CONFIG.userMainnetWallet,
@@ -35,8 +38,8 @@ export const DEFAULT_WALLET_STATE: WalletState = {
   profitReceiver: POLYGON_CHAIN_CONFIG.profitReceiverAddress,
   c1ArbTarget: POLYGON_CHAIN_CONFIG.c1ArbExecutorAddress,
   liquidationTarget: POLYGON_CHAIN_CONFIG.liquidationExecutorAddress,
-  nativePolBalance: 26.77, // Polygonscan Ground Truth for 0x9Bd51a2f18bd687d83B4A7cc9e661E4a58Fcef95
-  polValueUSD: 15.58, // 26.77 POL * ~$0.5820/POL (Chainlink POL/USD)
+  nativePolBalance: DEFAULT_FALLBACK_NATIVE_POL_BALANCE, // Polygonscan Ground Truth for 0x9Bd51a2f18bd687d83B4A7cc9e661E4a58Fcef95
+  polValueUSD: DEFAULT_FALLBACK_POL_VALUE_USD, // Derived from fallback POL balance × POL/USD
   usdcBalance: 0.00, // Liquid hot wallet ERC20 ($18k-$250k arbitrage is Balancer V3 zero-capital Flash Loan sourced)
   gasSpentUSD: 8.42,
   nonceCount: 179, // Polygonscan Verified Ground Truth (179 transactions sent)
@@ -217,11 +220,11 @@ export async function fetchLivePolygonOnChainState(walletAddress: string): Promi
 
   // Polygonscan Verified Ground Truth Fallback
   return {
-    nativePolBalance: 26.77,
-    nonceCount: 179,
+    nativePolBalance: DEFAULT_FALLBACK_NATIVE_POL_BALANCE,
+    nonceCount: DEFAULT_FALLBACK_NONCE_COUNT,
     isLiveRpcSuccess: false,
     rpcProviderUsed: 'Polygonscan Ground Truth Fallback',
-    polValueUSD: 15.58,
+    polValueUSD: DEFAULT_FALLBACK_POL_VALUE_USD,
   };
 }
 
