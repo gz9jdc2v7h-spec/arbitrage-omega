@@ -40,6 +40,8 @@ export const POLYGON_DEX_IDENTIFIERS: string[] = [
   'KyberSwapElastic', 'MeshSwapV2', 'PearlV3', 'RetroV3',
 ];
 
+const AAVE_V3_POOL_ADDRESS = '0x794a61358D6845594F94dc1DB02A252b5b4814aD';
+
 /**
  * POLYGON MAINNET (#137) LIVE PRODUCTION GRAPH METRICS — MAXIMUM DISCOVERY MODE
  * All 14 DEX protocols × 14 token assets fully indexed. discoverableIsExecutableUponGating active.
@@ -271,7 +273,7 @@ export const INITIAL_POOLS: PoolInfo[] = [
     protocol: 'AAVE_V3',
     protocolArchitecture: 'Aave V3 Flash Loan Facility (Zero-Collateral)',
     category: 'FUNDING_FLASHLOAN',
-    address: '0x794a61358D6845594F94dc1DB02A252b5b4814aD',
+    address: AAVE_V3_POOL_ADDRESS,
     token0: POLYGON_TOKENS.USDC_NATIVE,
     token1: POLYGON_TOKENS.WETH,
     feeBps: 5,
@@ -306,7 +308,7 @@ export const INITIAL_POOLS: PoolInfo[] = [
     protocol: 'AAVE_V3',
     protocolArchitecture: 'Aave V3 Lending Market — Liquidation Target',
     category: 'LIQUIDATION_TARGET',
-    address: '0x794a61358D6845594F94dc1DB02A252b5b4814aD',
+    address: AAVE_V3_POOL_ADDRESS,
     token0: POLYGON_TOKENS.WETH,
     token1: POLYGON_TOKENS.USDC_NATIVE,
     feeBps: 9,
@@ -321,7 +323,7 @@ export const INITIAL_POOLS: PoolInfo[] = [
     protocol: 'AAVE_V3',
     protocolArchitecture: 'Aave V3 Lending Market — Liquidation Target',
     category: 'LIQUIDATION_TARGET',
-    address: '0x794a61358D6845594F94dc1DB02A252b5b4814aD',
+    address: AAVE_V3_POOL_ADDRESS,
     token0: POLYGON_TOKENS.WBTC,
     token1: POLYGON_TOKENS.USDT,
     feeBps: 9,
