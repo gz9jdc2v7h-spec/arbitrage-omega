@@ -8,6 +8,7 @@ export type ProtocolType =
   | 'BAL_WEIGHTED'
   | 'CURVE_STABLE'
   | 'AAVE_V3'
+  | 'COMPOUND_V3'
   | 'BALANCER_V3';
 
 export type PoolCategory = 'SWAPPABLE_EXECUTION' | 'FUNDING_FLASHLOAN' | 'LIQUIDATION_TARGET';

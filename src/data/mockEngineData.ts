@@ -333,7 +333,7 @@ export const INITIAL_POOLS: PoolInfo[] = [
   {
     id: 'pool_compound_v3_usdc_comet',
     name: 'Compound V3 USDC Comet (WMATIC/USDC Market)',
-    protocol: 'AAVE_V3',
+    protocol: 'COMPOUND_V3',
     protocolArchitecture: 'Compound V3 Comet — Liquidation Target',
     category: 'LIQUIDATION_TARGET',
     address: '0xF25212E676D1F7F89Cd72fFEe66158f541246445',
@@ -348,7 +348,7 @@ export const INITIAL_POOLS: PoolInfo[] = [
   {
     id: 'pool_compound_v3_weth_usdc',
     name: 'Compound V3 WETH/USDC Comet Market',
-    protocol: 'AAVE_V3',
+    protocol: 'COMPOUND_V3',
     protocolArchitecture: 'Compound V3 Comet — Liquidation Target',
     category: 'LIQUIDATION_TARGET',
     address: '0x8dF3aad3a84da6b69A4DA8aeC3eA40d9091B2Ac4',
