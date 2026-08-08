@@ -1,5 +1,5 @@
 {
-  "name": "react-example",
+  "name": "apex-omegav5",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,17 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "hybrid:bootstrap": "powershell -ExecutionPolicy Bypass -File .\\scripts\\ops\\bootstrap_hybrid_env.ps1",
+    "hybrid:start": "powershell -ExecutionPolicy Bypass -File .\\scripts\\ops\\start_direct.ps1",
+    "hybrid:launch": "powershell -ExecutionPolicy Bypass -File .\\scripts\\ops\\launch_hybrid.ps1",
+    "deploy": "powershell -ExecutionPolicy Bypass -File .\\scripts\\ops\\deploy_main.ps1",
+    "bootstrap": "yarn install --immutable",
+    "dev:yarn": "yarn dev",
+    "dry-run:discovery": "tsx scripts/discovery-ranking-dry-run.ts",
+    "truth-gate:live": "tsx scripts/live-truth-gate.ts",
+    "probe:balancer": "tsx scripts/probe-balancer-query.ts",
+    "audit:targets": "tsx scripts/audit-contract-targets.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
